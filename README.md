@@ -1,17 +1,17 @@
 # RailConnect 🚄
-Console-Based Railway Booking Simulation
+Tkinter-Based Railway Booking Simulation
 
 ## 📖 Overview
-RailConnect is a Python-based simulation of a railway booking system. Designed as a student project, it models the essential workflow of train reservations in India. The program demonstrates route search, date validation, train selection, fare calculation, seat allotment, and ticket generation — all within a console interface. It aims to provide a simplified yet realistic view of how railway booking systems operate.
+RailConnect is a Python project that simulates a railway booking system with a graphical user interface (GUI) built using Tkinter. It models the essential workflow of train reservations in India, including route search, date validation, train selection, seat allotment, fare calculation, and ticket generation. The GUI makes the system more interactive and user-friendly compared to the console version.
 
 ## ✨ Features
-- **Route Search**: Search trains between predefined cities (BHOPAL, AMARAVATI, VELLORE, CHENNAI).
-- **Date Validation**: Accepts DDMMYYYY format and ensures bookings are for present/future dates.
-- **Train Selection**: Displays filtered trains and allows user choice.
+- **Station Selection**: Dropdown menus for source and destination stations.
+- **Date Validation**: Input travel date in DDMMYYYY format; ensures present/future bookings.
+- **Train Search**: Displays available trains in a listbox based on selected route.
 - **Fare Calculation**: Fixed fare per journey with 5% GST applied.
-- **Seat Allotment**: Random seat assignment with berth type logic based on Indian Railways 8-berth bay.
-- **Mock Payment Gateway**: Simulates card/PIN validation and transaction delay.
-- **Ticket Generation**: Prints a structured ticket with journey, seat, and payment details.
+- **Seat Allotment**: Random seat assignment (1–72) with berth type logic (LB, MB, UB, SL, SU).
+- **Mock Payment Gateway**: GUI form for card/PIN entry with simulated delay.
+- **Ticket Generation**: Ticket details displayed in a structured window.
 
 ## ⚙️ Berth Allotment Logic
 Seats are numbered 1–72. Using `seat_number % 8`, berth types are assigned:
@@ -21,19 +21,17 @@ Seats are numbered 1–72. Using `seat_number % 8`, berth types are assigned:
 - 7 → Side Lower (SL)  
 - 0 → Side Upper (SU)  
 
-This mimics the standard 8-berth bay layout in Indian Railways coaches.
-
 ## 🛠 Prerequisites
 - Python 3.6+  
-- Built-in modules only: `datetime`, `time`, `random`  
-
-No external dependencies required.
+- Tkinter (bundled with Python)  
+- Built-in modules: `datetime`, `time`, `random`
 
 ## 🚀 How to Run
-1. Save the script as `railconnect_booking.py`.
+1. Save the script as `railconnect_gui.py`.
 2. Open terminal/command prompt.
 3. Navigate to the script directory.
 4. Run:
    ```bash
-   python railconnect_booking.py
+   python railconnect_gui.py
+
 
