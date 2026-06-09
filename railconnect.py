@@ -39,7 +39,7 @@ def calculate_network_distance(src, dest):
     deg_dist = ((c1[0]-c2[0])**2 + (c1[1]-c2[1])**2)**0.5
     return max(120, int(deg_dist * 110 * 1.25))
 
-# --- FIXED INDIAN RAILWAYS EXPRESS ROUTE MAPS ---
+# --- INDIAN RAILWAYS ROUTE MAPS ---
 trains_db = [
     # Delhi Connections
     {"no": 12951, "name": "Mumbai Tejas Rajdhani", "src": "Delhi (NDLS)", "dest": "Mumbai (CSTM)"},
@@ -117,7 +117,7 @@ berth_map = {1: "Lower", 4: "Lower", 2: "Middle", 5: "Middle", 3: "Upper", 6: "U
 class RailConnectApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("RailConnect Master Grid")
+        self.root.title("RailConnect")
         self.root.geometry("620x760") 
         self.root.configure(bg=BG_MAIN)
         self.available_trains = []
@@ -127,20 +127,20 @@ class RailConnectApp:
         # --- HEADER BANNER ---
         header = tk.Frame(self.root, bg=BG_MAIN, pady=10)
         header.pack(fill="x")
-        tk.Label(header, text="RAILCONNECT MASTER GRID", font=("Impact", 26), fg=ACCENT_CYAN, bg=BG_MAIN).pack()
-        tk.Label(header, text="PASSENGER METRICS AND EXPRESS DATA GRID SYSTEM", font=("Consolas", 9), fg=TEXT_DIM, bg=BG_MAIN).pack()
+        tk.Label(header, text="RAILCONNECT", font=("Impact", 26), fg=ACCENT_CYAN, bg=BG_MAIN).pack()
+        tk.Label(header, text="TICKET BOOKING SYSTEM", font=("Consolas", 9), fg=TEXT_DIM, bg=BG_MAIN).pack()
 
         # --- CARD FRAME (INPUT LAYOUT) ---
         card_frame = tk.Frame(self.root, bg=BG_CARD, padx=20, pady=12, highlightbackground="#334155", highlightthickness=1)
         card_frame.pack(pady=5, padx=35, fill="x")
 
         # Select Station Nodes
-        tk.Label(card_frame, text="SOURCE HUB STATION:", fg=TEXT_DIM, bg=BG_CARD, font=("Consolas", 10, "bold")).grid(row=0, column=0, sticky="w", pady=4)
+        tk.Label(card_frame, text="FROM:", fg=TEXT_DIM, bg=BG_CARD, font=("Consolas", 10, "bold")).grid(row=0, column=0, sticky="w", pady=4)
         self.source_var = tk.StringVar()
         self.source_cb = ttk.Combobox(card_frame, textvariable=self.source_var, values=stations, state="readonly", width=25)
         self.source_cb.grid(row=0, column=1, sticky="e", pady=4, padx=(15, 0))
 
-        tk.Label(card_frame, text="TARGET DESTINATION :", fg=TEXT_DIM, bg=BG_CARD, font=("Consolas", 10, "bold")).grid(row=1, column=0, sticky="w", pady=4)
+        tk.Label(card_frame, text="TO:", fg=TEXT_DIM, bg=BG_CARD, font=("Consolas", 10, "bold")).grid(row=1, column=0, sticky="w", pady=4)
         self.dest_var = tk.StringVar()
         self.dest_cb = ttk.Combobox(card_frame, textvariable=self.dest_var, values=stations, state="readonly", width=25)
         self.dest_cb.grid(row=1, column=1, sticky="e", pady=4, padx=(15, 0))
@@ -152,11 +152,11 @@ class RailConnectApp:
         
         self.date_entry = tk.Entry(inner_date_frame, bg=BG_MAIN, fg=TEXT_MAIN, insertbackground="white", relief="flat", font=("Consolas", 11), width=18, justify="center")
         self.date_entry.pack(side="left", padx=4, pady=2)
-        self.date_entry.insert(0, datetime.now().strftime("%d/%m/%Y")) # Sets default using / separator
+        self.date_entry.insert(0, datetime.now().strftime("%d/%m/%Y")) 
         tk.Label(inner_date_frame, text="DD/MM/YYYY", fg=TEXT_DIM, bg=BG_MAIN, font=("Consolas", 8, "bold")).pack(side="right", padx=6)
 
         # Berth Layer Preference
-        tk.Label(card_frame, text="BERTH VECTOR LAYER:", fg=TEXT_DIM, bg=BG_CARD, font=("Consolas", 10, "bold")).grid(row=3, column=0, sticky="w", pady=4)
+        tk.Label(card_frame, text="BERTH PREFERENCE:", fg=TEXT_DIM, bg=BG_CARD, font=("Consolas", 10, "bold")).grid(row=3, column=0, sticky="w", pady=4)
         self.seat_pref = tk.StringVar()
         self.seat_cb = ttk.Combobox(card_frame, textvariable=self.seat_pref, values=["Lower Berth", "Middle Berth", "Upper Berth", "Side Lower", "Side Upper"], state="readonly", width=25)
         self.seat_cb.grid(row=3, column=1, sticky="e", pady=4, padx=(15, 0))
@@ -173,7 +173,6 @@ class RailConnectApp:
         self.age_entry.grid(row=5, column=1, sticky="e", pady=4)
         self.age_entry.insert(0, "")
 
-        # --- SEARCH ENGINES BUTTON PANEL ---
         btn_frame = tk.Frame(self.root, bg=BG_MAIN)
         btn_frame.pack(pady=8, padx=35, fill="x")
 
@@ -181,11 +180,10 @@ class RailConnectApp:
                   bg=ACCENT_CYAN, fg=BG_MAIN, font=("Arial", 12, "bold"), 
                   activebackground=TERMINAL_GREEN, relief="flat", cursor="hand2", pady=6).pack(fill="x", pady=2)
 
-        # --- INTERACTIVE OUTPUT GRID OVERVIEW ---
         self.list_container = tk.Frame(self.root, bg=BG_MAIN)
         self.list_container.pack(pady=5, padx=35, fill="x")
         
-        tk.Label(self.list_container, text="ACTIVE VERIFIED COUPLING MATCHES", fg=ACCENT_CYAN, bg=BG_MAIN, font=("Consolas", 10, "bold")).pack(anchor="w", pady=(2, 2))
+        tk.Label(self.list_container, text="AVAILABLE TRAINS", fg=ACCENT_CYAN, bg=BG_MAIN, font=("Consolas", 10, "bold")).pack(anchor="w", pady=(2, 2))
         
         self.train_list = tk.Listbox(self.list_container, width=65, height=6, bg=BG_CARD, fg=TEXT_MAIN, 
                                      selectbackground=ACCENT_CYAN, selectforeground=BG_MAIN, 
@@ -198,7 +196,6 @@ class RailConnectApp:
         self.book_btn.pack(fill="x", pady=4)
 
     def parse_flexible_date(self, date_str):
-        # Normalizes dates split by /, \, or . into an explicit clean string segment
         clean_date = re.sub(r'[\\/.]', '', date_str).strip()
         try:
             parsed_d = datetime.strptime(clean_date, "%d%m%Y")
@@ -264,11 +261,16 @@ class RailConnectApp:
 
         pay_win = tk.Toplevel(self.root)
         pay_win.title("Secure Payment Gateway Interface")
-        pay_win.geometry("450x440")
+        pay_win.geometry("450x450")
         pay_win.configure(bg=BG_CARD)
         pay_win.resizable(False, False)
         pay_win.transient(self.root)
         pay_win.grab_set()
+
+        self.root.update_idletasks()
+        spawn_x = self.root.winfo_x() + (self.root.winfo_width() - 450) // 2
+        spawn_y = self.root.winfo_y() + (self.root.winfo_height() - 450) // 2
+        pay_win.geometry(f"450x450+{spawn_x}+{spawn_y}")
 
         top_banner = tk.Frame(pay_win, bg="#0f172a", pady=10)
         top_banner.pack(fill="x")
@@ -277,7 +279,7 @@ class RailConnectApp:
         amt_frame = tk.Frame(pay_win, bg=BG_MAIN, padx=15, pady=8, highlightbackground="#334155", highlightthickness=1)
         amt_frame.pack(pady=10, padx=25, fill="x")
         tk.Label(amt_frame, text=f"PASSENGER: {passenger_name.upper()} ({passenger_age} Yrs)", font=("Consolas", 9, "bold"), fg=ACCENT_CYAN, bg=BG_MAIN).pack(anchor="w")
-        tk.Label(amt_frame, text=f"TRAIN ENGINE: #{selected_train['no']} - {selected_train['name']}", font=("Consolas", 9), fg=TEXT_DIM, bg=BG_MAIN).pack(anchor="w", pady=2)
+        tk.Label(amt_frame, text=f"TRAIN Number: {selected_train['no']} - {selected_train['name']}", font=("Consolas", 9), fg=TEXT_DIM, bg=BG_MAIN).pack(anchor="w", pady=2)
         tk.Label(amt_frame, text=f"TOTAL PAYABLE: ₹{fare}.00", font=("Consolas", 13, "bold"), fg=TERMINAL_GREEN, bg=BG_MAIN).pack(anchor="w", pady=(2,0))
 
         input_frame = tk.Frame(pay_win, bg=BG_CARD)
@@ -289,18 +291,18 @@ class RailConnectApp:
         def toggle_inputs():
             if method_var.get() == "CARD":
                 lbl_1.config(text="CARD NUMBER:")
-                lbl_2.config(text="EXPIRY / CVV:")
-                ent_1.delete(0, tk.END); ent_1.insert(0, "")
-                ent_2.delete(0, tk.END); ent_2.insert(0, "")
+                lbl_2.config(text="CVV SECURITY:")
+                hint_lbl.config(text="Format hint: 16-digit Card Number | 3-digit CVV Code")
             else:
                 lbl_1.config(text="VPA / UPI ID:")
                 lbl_2.config(text="PIN :")
-                ent_1.delete(0, tk.END); ent_1.insert(0, "")
-                ent_2.delete(0, tk.END); ent_2.insert(0, "")
+                hint_lbl.config(text="Processing securely via Unified Payments Interface")
+            ent_1.delete(0, tk.END)
+            ent_2.delete(0, tk.END)
 
-        r_card = tk.Radiobutton(input_frame, text="Credit/Debit", variable=method_var, value="CARD", bg=BG_CARD, fg=TEXT_MAIN, selectcolor=BG_MAIN, activebackground=BG_CARD, activeforeground=TEXT_MAIN, font=("Consolas", 9), command=toggle_inputs)
+        r_card = tk.Radiobutton(input_frame, text="Credit/Debit", variable=method_var, value="CARD", bg=BG_CARD, fg=TEXT_MAIN, selectcolor=BG_MAIN, font=("Consolas", 9), command=toggle_inputs)
         r_card.grid(row=0, column=1, padx=5, sticky="w")
-        r_upi = tk.Radiobutton(input_frame, text="UPI Interface", variable=method_var, value="UPI", bg=BG_CARD, fg=TEXT_MAIN, selectcolor=BG_MAIN, activebackground=BG_CARD, activeforeground=TEXT_MAIN, font=("Consolas", 9), command=toggle_inputs)
+        r_upi = tk.Radiobutton(input_frame, text="UPI Interface", variable=method_var, value="UPI", bg=BG_CARD, fg=TEXT_MAIN, selectcolor=BG_MAIN, font=("Consolas", 9), command=toggle_inputs)
         r_upi.grid(row=0, column=2, padx=5, sticky="w")
 
         lbl_1 = tk.Label(input_frame, text="CARD NUMBER:", font=("Consolas", 9, "bold"), fg=TEXT_DIM, bg=BG_CARD)
@@ -308,10 +310,13 @@ class RailConnectApp:
         ent_1 = tk.Entry(input_frame, bg=BG_MAIN, fg=TEXT_MAIN, relief="flat", font=("Consolas", 10), insertbackground="white", highlightthickness=1, highlightbackground="#475569")
         ent_1.grid(row=1, column=1, columnspan=2, sticky="ew", pady=10, ipady=3)
 
-        lbl_2 = tk.Label(input_frame, text="EXPIRY / CVV:", font=("Consolas", 9, "bold"), fg=TEXT_DIM, bg=BG_CARD)
+        lbl_2 = tk.Label(input_frame, text="CVV SECURITY:", font=("Consolas", 9, "bold"), fg=TEXT_DIM, bg=BG_CARD)
         lbl_2.grid(row=2, column=0, sticky="w", pady=10)
-        ent_2 = tk.Entry(input_frame, bg=BG_MAIN, fg=TEXT_MAIN, relief="flat", font=("Consolas", 10), insertbackground="white", highlightthickness=1, highlightbackground="#475569")
+        ent_2 = tk.Entry(input_frame, bg=BG_MAIN, fg=TEXT_MAIN, relief="flat", font=("Consolas", 10), insertbackground="white", highlightthickness=1, highlightbackground="#475569", show="*")
         ent_2.grid(row=2, column=1, columnspan=2, sticky="ew", pady=10, ipady=3)
+
+        hint_lbl = tk.Label(pay_win, text="", font=("Consolas", 8), fg=TEXT_DIM, bg=BG_CARD)
+        hint_lbl.pack(pady=(2, 0))
 
         toggle_inputs()
 
@@ -319,6 +324,24 @@ class RailConnectApp:
         status_lbl.pack(pady=8)
 
         def run_processing():
+            if method_var.get() == "CARD":
+                card_no = ent_1.get().strip().replace(" ", "")
+                cvv = ent_2.get().strip()
+
+                if not card_no:
+                    messagebox.showerror("Gateway Error", "Card entry core parameters are blank.")
+                    return
+                if not card_no.isdigit() or len(card_no) != 16:
+                    messagebox.showerror("Validation Error", "Invalid Authentication Payload: Card must contain exactly 16 numeric digits.")
+                    return
+
+                if not cvv:
+                    messagebox.showerror("Gateway Error", "CVV verification field is blank.")
+                    return
+                if not cvv.isdigit() or len(cvv) != 3:
+                    messagebox.showerror("Validation Error", "Security Validation Failure: CVV code must be exactly 3 numeric digits.")
+                    return
+
             btn_action.config(state="disabled", text="PROCESSING VIA NPCI...")
             stages = [
                 ("CONNECTING BANK ECOSYSTEM...", ACCENT_CYAN),
@@ -329,7 +352,7 @@ class RailConnectApp:
             def update_stage(idx):
                 if idx < len(stages):
                     status_lbl.config(text=f"» {stages[idx][0]}", fg=stages[idx][1])
-                    pay_win.after(700, lambda: update_stage(idx + 1))
+                    pay_win.after(600, lambda: update_stage(idx + 1))
                 else:
                     pay_win.destroy()
                     self.book_ticket(selected_train, distance, fare, passenger_name, passenger_age, travel_date)
@@ -369,11 +392,11 @@ class RailConnectApp:
         if len(display_name) > 22: display_name = display_name[:20] + ".."
 
         details = [
-            ("PNR TRANSIT NO:", pnr, "TRAVEL DATE:", travel_date),
-            ("TRAIN ENGINE:", f"#{selected_train['no']}", "ASSIGNED LINE:", display_name),
-            ("COACH / UNIT:", f"{coach} / SEAT {seat}", "BERTH SECTOR:", berth),
+            ("PNR NO:", pnr, "TRAVEL DATE:", travel_date),
+            ("TRAIN NUMBER:", f"{selected_train['no']}", "TRAIN NAME:", display_name),
+            ("COACH / SEAT NO.:", f"{coach} / {seat}", "BERTH NUMBER:", berth),
             ("PASSENGER NAME:", name.upper(), "PASSENGER AGE:", f"{age} YRS"),
-            ("DISTANCE RUN:", f"{distance} KM", "METRIC FARE :", f"₹{fare}.00 [PAID]")
+            ("DISTANCE RUN:", f"{distance} KM", "FARE :", f"₹{fare}.00 [PAID]")
         ]
 
         for r, (lbl1, val1, lbl2, val2) in enumerate(details):
@@ -382,11 +405,15 @@ class RailConnectApp:
             tk.Label(info_frame, text=lbl2, font=("Consolas", 9, "bold"), fg=TEXT_DIM, bg=BG_CARD).grid(row=r, column=2, sticky="w", pady=4)
             tk.Label(info_frame, text=val2, font=("Consolas", 9), fg=TEXT_MAIN, bg=BG_CARD).grid(row=r, column=3, sticky="w", pady=4)
 
-        deco_frame = tk.Frame(body, bg=BG_MAIN, height=35, pady=5)
-        deco_frame.pack(fill="x", pady=(10, 0))
+        deco_frame = tk.Frame(body, bg=BG_MAIN, pady=10, highlightbackground="#334155", highlightthickness=1)
+        deco_frame.pack(fill="x", pady=(12, 0))
         
-        barcode_str = "|||||| | |||| || ||||||| || |||| |||| |||| | |||| || ||" 
-        tk.Label(deco_frame, text=barcode_str, font=("Courier New", 11), fg=TEXT_DIM, bg=BG_MAIN).pack()
+        tk.Label(deco_frame, text="★ WISHING YOU A SAFE & HAPPY JOURNEY ★", 
+                 font=("Consolas", 10, "bold"), fg=ACCENT_CYAN, bg=BG_MAIN).pack()
+                 
+        tk.Label(deco_frame, text=f"THANK YOU FOR CHOOSING IR-RAILCONNECT • PNR: {pnr}", 
+                 font=("Consolas", 7), fg=TEXT_DIM, bg=BG_MAIN).pack(pady=(3, 0))
+        
 
 if __name__ == "__main__":
     root = tk.Tk()
